@@ -5,7 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
+  CheckLst;
 
 type
 
@@ -19,10 +20,10 @@ type
     Button5: TButton;
     Button6: TButton;
     Edit1: TEdit;
-    Memo1: TMemo;
-    Memo2: TMemo;
-    Memo3: TMemo;
-    Memo4: TMemo;
+    ListBox1: TListBox;
+    ListBox2: TListBox;
+    ListBox3: TListBox;
+    ListBox4: TListBox;
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button3Click(Sender: TObject);
@@ -80,7 +81,6 @@ begin
     end;
 end;
 
-end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
@@ -89,7 +89,7 @@ begin
   Randomis(mass, n);
   for z := 0 to n-1 do
   begin
-  Memo1.Lines.AddStrings(inttostr(mass[z]));
+    ListBox1.Items.Add(inttostr(mass[z]));
   end;
 end;
 
@@ -100,7 +100,7 @@ begin
   SpSort(mass, masssort, n, z);
   for z := 0 to n-1 do
   begin
-  Memo3.Lines.AddStrings(inttostr(mass[z]));
+  ListBox1.Items.Add(inttostr(mass[z]));
   end;
 end;
 

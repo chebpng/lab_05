@@ -2,10 +2,10 @@ object Form1: TForm1
   Left = 526
   Height = 844
   Top = 48
-  Width = 673
+  Width = 690
   Caption = 'Form1'
   ClientHeight = 844
-  ClientWidth = 673
+  ClientWidth = 690
   DesignTimePPI = 120
   LCLVersion = '3.4.0.0'
   object Edit1: TEdit
@@ -67,32 +67,36 @@ object Form1: TForm1
     Caption = 'Слияние'
     TabOrder = 6
   end
-  object Memo1: TMemo
-    Left = 56
-    Height = 512
-    Top = 176
-    Width = 150
+  object ListBox1: TListBox
+    Left = 57
+    Height = 524
+    Top = 178
+    Width = 148
+    ItemHeight = 0
     TabOrder = 7
   end
-  object Memo2: TMemo
-    Left = 56
-    Height = 112
-    Top = 712
-    Width = 568
+  object ListBox2: TListBox
+    Left = 272
+    Height = 524
+    Top = 176
+    Width = 148
+    ItemHeight = 0
     TabOrder = 8
   end
-  object Memo3: TMemo
-    Left = 272
-    Height = 512
+  object ListBox3: TListBox
+    Left = 476
+    Height = 524
     Top = 176
-    Width = 150
+    Width = 148
+    ItemHeight = 0
     TabOrder = 9
   end
-  object Memo4: TMemo
-    Left = 474
-    Height = 512
-    Top = 176
-    Width = 150
+  object ListBox4: TListBox
+    Left = 56
+    Height = 111
+    Top = 718
+    Width = 569
+    ItemHeight = 0
     TabOrder = 10
   end
   object OpenDialog1: TOpenDialog
