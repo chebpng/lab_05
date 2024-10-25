@@ -27,6 +27,7 @@ type
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
 
   public
@@ -37,8 +38,8 @@ type
 
 var
   Form1: TForm1;
-  n,z: integer;
-  mass:array of integer;
+  n,z,sorted,temp: integer;
+  mass,masssort:array of integer;
 
 implementation
 
@@ -51,7 +52,6 @@ var
   z: integer;  // Объявляем переменную z
 begin
   Randomize();
-  //SetLength(mass, n);  // Устанавливаем длину массива
   for z := 0 to n - 1 do
   begin
     if Random(2) = 0 then
@@ -59,9 +59,27 @@ begin
     else
       mass[z] := -1 * (Random(1000));
   end;
-
-
 end;
+
+  procedure SpSort(var mass, masssort:array of integer; n,z:integer);
+begin
+    n := n - 1;
+    while Sorted <> 1 do
+    begin
+      Sorted := 1;
+      for z := 0 to n - 1 do
+      begin
+        if mass[z] > mass[z+1] then
+        begin
+          Sorted := 0;
+          temp := mass[z];
+          mass[z] := mass[z+1];
+          mass[z+1] := temp;
+        end;
+      end;
+    end;
+end;
+
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
@@ -71,6 +89,17 @@ begin
   for z := 0 to n-1 do
   begin
   Memo1.Lines.AddStrings(inttostr(mass[z]));
+  end;
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  //упорядоченный
+  SetLength(massSort, n);
+  SpSort(mass, masssort, n, z);
+  for z := 0 to n-1 do
+  begin
+  Memo3.Lines.AddStrings(inttostr(mass[z]));
   end;
 end;
 
