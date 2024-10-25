@@ -43,6 +43,7 @@ var
   Form1: TForm1;
   n, z, o, v, sorted, temp, elem: integer;
   mass,masss:array of integer;
+  trail:string;
 
 implementation
 
@@ -71,10 +72,18 @@ begin
         n:=strtoint(Edit1.text);
         SetLength(mass, n);
         Randomis(n, mass);
-        for z := 0 to n-1 do
+        if n <= 40 then
         begin
-             ListBox1.Items.Add(inttostr(mass[z]));
-        end;
+           for z := 0 to n-1 do
+           begin
+                  ListBox1.Items.Add(inttostr(mass[z]));
+           end;
+        end
+        else
+            for z := 0 to 39 do
+            begin
+                 ListBox1.Items.Add(inttostr(mass[z]));
+            end;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -96,11 +105,19 @@ begin
       end;
       mass[o + 1] := temp;
   end;
-  for z := 0 to n-1 do
-      begin
-           ListBox2.Items.Add(inttostr(mass[z]));
-      end;
-end;
+  if n <= 40 then
+    begin
+      for z := 0 to n-1 do
+          begin
+               ListBox2.Items.Add(inttostr(mass[z]));
+          end;
+      end
+      else
+          for z := 0 to 39 do
+          begin
+            ListBox2.Items.Add(inttostr(mass[z]));
+          end;
+    end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
@@ -110,8 +127,32 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
      //сохранение в файл
-     SelectDirectoryDialog1.Execute
-     := SelectDirectoryDialog1.FileName;
+     ListBox4.Items.Add('Выберите место для сохранения файла');
+     SelectDirectoryDialog1.Execute;
+     trail := SelectDirectoryDialog1.FileName;
+     ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text);
+     {Сохранения комбобокса в файл
+     procedure TForm1.Button1Click(Sender: TObject);
+     var
+       MyFile: TextFile;
+       i: Integer;
+     begin
+       // Открываем или создаем текстовый файл для записи
+       AssignFile(MyFile, 'output.txt');
+       Rewrite(MyFile);
+       try
+         // Используем цикл для записи всех элементов ComboBox
+         for i := 0 to ComboBox1.Items.Count - 1 do
+         begin
+           WriteLn(MyFile, ComboBox1.Items[i]);
+         end;
+       finally
+         // Закрываем файл
+         CloseFile(MyFile);
+       end;
+
+       ShowMessage('Все строки записаны в файл.');
+     end;}
 end;
 
 end.
