@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
-  CheckLst;
+  CheckLst, ShellAPI, Windows;
 
 type
 
@@ -28,6 +28,7 @@ type
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
@@ -44,7 +45,8 @@ var
   Form1: TForm1;
   n, ns, sn, z, o, v, sorted, temp, elem: integer;
   mass,masss,smass,result:array of integer;
-  trail:string;
+  trail, trailO:string;
+  res:QWord;
 
 implementation
 
@@ -259,5 +261,18 @@ begin
      ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text+'.txt');
         end;
      end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  OpenDialog1.Execute ;
+  trailO := OpenDialog1.Filename; // путь к выбранному файлу
+    ListBox4.Items.Add('Открытие файла ' + trailO); // сообщение в ListBox
+     res := ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
+
+    if res <= 32 then // Если результат меньше или равен 32, произошла ошибка
+    begin
+      ShowMessage('Ошибка при открытии файла. Код ошибки: ' + IntToStr(res));
+end;
+end;
 end.
 

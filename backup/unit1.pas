@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
-  CheckLst;
+  CheckLst, ShellAPI, Windows;
 
 type
 
@@ -28,6 +28,7 @@ type
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
@@ -44,7 +45,8 @@ var
   Form1: TForm1;
   n, ns, sn, z, o, v, sorted, temp, elem: integer;
   mass,masss,smass,result:array of integer;
-  trail:string;
+  trail, trailO:string;
+  res:QWord;
 
 implementation
 
@@ -167,23 +169,23 @@ begin
       temp := masss[z];
       o := z - 1;
       while (o >= 0) and (masss[o] > temp) do
-      begin
-          masss[o + 1] := masss[o];
-          o := o - 1;
-      end;
+        begin
+            masss[o + 1] := masss[o];
+            o := o - 1;
+        end;
       masss[o + 1] := temp;
   end;
   if ns <= 40 then
     begin
-      for z := 0 to ns-1 do
-          begin
-               ListBox2.Items.Add(inttostr(masss[z]));
-          end;
+         for z := 0 to ns-1 do
+           begin
+                ListBox2.Items.Add(inttostr(masss[z]));
+           end;
       end
       else
           for z := 0 to 39 do
           begin
-            ListBox2.Items.Add(inttostr(masss[z]));
+               ListBox2.Items.Add(inttostr(masss[z]));
           end;
     end;
 
@@ -199,16 +201,16 @@ begin
   MergeSort(smass, sn);
   if sn <= 40 then
     begin
-      for z := 0 to sn-1 do
-          begin
-               ListBox3.Items.Add(inttostr(smass[z]));
-          end;
+         for z := 0 to sn-1 do
+           begin
+                ListBox3.Items.Add(inttostr(smass[z]));
+           end;
       end
       else
           for z := 0 to 39 do
-          begin
-            ListBox3.Items.Add(inttostr(smass[z]));
-          end;
+              begin
+                  ListBox3.Items.Add(inttostr(smass[z]));
+              end;
     end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -228,30 +230,30 @@ begin
      Rewrite(MyFile);
      try
          if ListBox1.Items.Count >0 then
-         begin
-           WriteLn(MyFile, '----------Линейный----------');
-           for i := 0 to n-1 do
            begin
-             WriteLn(MyFile, mass[i]);
+             WriteLn(MyFile, '----------Линейный----------');
+             for i := 0 to n-1 do
+               begin
+                 WriteLn(MyFile, mass[i]);
+               end;
            end;
-         end;
 
         if ListBox2.Items.Count >0 then
         begin
           WriteLn(MyFile, '----------Упорядоченный----------');
           for i := 0 to ns-1 do
-          begin
-            WriteLn(MyFile, masss[i]);
-          end;
+            begin
+              WriteLn(MyFile, masss[i]);
+            end;
         end;
 
         if ListBox3.Items.Count >0 then
         begin
           WriteLn(MyFile, '----------Слияние----------');
           for i := 0 to sn - 1 do
-          begin
-            WriteLn(MyFile, smass[i]);
-          end;
+            begin
+              WriteLn(MyFile, smass[i]);
+            end;
         end;
        finally
          // Закрываем файл
@@ -259,5 +261,18 @@ begin
      ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text+'.txt');
         end;
      end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  OpenDialog1.Execute ;
+  trailO := OpenDialog1.Filename; // Получаем путь к выбранному файлу
+    ListBox4.Items.Add('Открытие файла ' + trailO); // Выводим сообщение в ListBox
+     res := ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
+
+    if res <= 32 then // Если результат меньше или равен 32, произошла ошибка
+    begin
+      ShowMessage('Ошибка при открытии файла. Код ошибки: ' + IntToStr(res));
+end;
+end;
 end.
 
