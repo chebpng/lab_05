@@ -61,33 +61,33 @@ begin
   k := 0;
 
   while (l < sn) and (r < n1) do
-  begin
-    if arr[l] <= arr1[r] then
+    begin
+      if arr[l] <= arr1[r] then
+      begin
+        res[k] := arr[l];
+        l := l + 1;
+      end
+      else
+      begin
+        res[k] := arr1[r];
+        r := r + 1;
+      end;
+      k := k + 1;
+    end;
+
+  while l < sn do
     begin
       res[k] := arr[l];
       l := l + 1;
-    end
-    else
+      k := k + 1;
+    end;
+
+    while r < n1 do
     begin
       res[k] := arr1[r];
       r := r + 1;
+      k := k + 1;
     end;
-    k := k + 1;
-  end;
-
-  while l < sn do
-  begin
-    res[k] := arr[l];
-    l := l + 1;
-    k := k + 1;
-  end;
-
-  while r < n1 do
-  begin
-    res[k] := arr1[r];
-    r := r + 1;
-    k := k + 1;
-  end;
 end;
 
 procedure MergeSort(var smass: array of Integer; sn: Integer);
@@ -119,7 +119,6 @@ begin
     smass[i] := result[i];
 end;
 
-
 procedure Randomis(var n:integer; var mass:array of integer);
 var elem, z:integer;
 begin
@@ -144,15 +143,15 @@ begin
         if n <= 40 then
         begin
            for z := 0 to n-1 do
-           begin
-                  ListBox1.Items.Add(inttostr(mass[z]));
-           end;
+             begin
+                    ListBox1.Items.Add(inttostr(mass[z]));
+             end;
         end
         else
             for z := 0 to 39 do
-            begin
-                 ListBox1.Items.Add(inttostr(mass[z]));
-            end;
+              begin
+                   ListBox1.Items.Add(inttostr(mass[z]));
+              end;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -168,23 +167,23 @@ begin
       temp := masss[z];
       o := z - 1;
       while (o >= 0) and (masss[o] > temp) do
-      begin
-          masss[o + 1] := masss[o];
-          o := o - 1;
-      end;
+        begin
+            masss[o + 1] := masss[o];
+            o := o - 1;
+        end;
       masss[o + 1] := temp;
   end;
   if ns <= 40 then
     begin
-      for z := 0 to ns-1 do
-          begin
-               ListBox2.Items.Add(inttostr(masss[z]));
-          end;
+         for z := 0 to ns-1 do
+           begin
+                ListBox2.Items.Add(inttostr(masss[z]));
+           end;
       end
       else
           for z := 0 to 39 do
           begin
-            ListBox2.Items.Add(inttostr(masss[z]));
+               ListBox2.Items.Add(inttostr(masss[z]));
           end;
     end;
 
@@ -200,72 +199,64 @@ begin
   MergeSort(smass, sn);
   if sn <= 40 then
     begin
-      for z := 0 to sn-1 do
-          begin
-               ListBox3.Items.Add(inttostr(smass[z]));
-          end;
+         for z := 0 to sn-1 do
+           begin
+                ListBox3.Items.Add(inttostr(smass[z]));
+           end;
       end
       else
           for z := 0 to 39 do
-          begin
-            ListBox3.Items.Add(inttostr(smass[z]));
-          end;
+              begin
+                  ListBox3.Items.Add(inttostr(smass[z]));
+              end;
     end;
-
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
   close
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.Button1Click(Sender: TObject);//сохранение в файл
 var
   MyFile:TextFile;
   i:integer;
 begin
-     //сохранение в файл
      ListBox4.Items.Add('Выберите место для сохранения файла');
      SelectDirectoryDialog1.Execute;
      trail := SelectDirectoryDialog1.FileName;
      AssignFile(MyFile, trail+'\'+ComboBox1.text+'.txt');
      Rewrite(MyFile);
      try
-         // Используем цикл для записи всех элементов ComboBox
-
          if ListBox1.Items.Count >0 then
-         begin
-           WriteLn(MyFile, '----------Линейный----------');
-           for i := 0 to n-1 do
            begin
-             WriteLn(MyFile, mass[i]);
+             WriteLn(MyFile, '----------Линейный----------');
+             for i := 0 to n-1 do
+               begin
+                 WriteLn(MyFile, mass[i]);
+               end;
            end;
-         end;
 
         if ListBox2.Items.Count >0 then
         begin
           WriteLn(MyFile, '----------Упорядоченный----------');
           for i := 0 to ns-1 do
-          begin
-            WriteLn(MyFile, masss[i]);
-          end;
+            begin
+              WriteLn(MyFile, masss[i]);
+            end;
         end;
-
-
 
         if ListBox3.Items.Count >0 then
         begin
           WriteLn(MyFile, '----------Слияние----------');
           for i := 0 to sn - 1 do
-          begin
-            WriteLn(MyFile, smass[i]);
-          end;
+            begin
+              WriteLn(MyFile, smass[i]);
+            end;
         end;
-
        finally
          // Закрываем файл
          CloseFile(MyFile);
      ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text+'.txt');
-
         end;
      end;
 end.
