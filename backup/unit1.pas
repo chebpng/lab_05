@@ -265,14 +265,11 @@ begin
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   OpenDialog1.Execute ;
-  trailO := OpenDialog1.Filename; // Получаем путь к выбранному файлу
-    ListBox4.Items.Add('Открытие файла ' + trailO); // Выводим сообщение в ListBox
-     res := ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
+  trailO := OpenDialog1.Filename; // путь к выбранному файлу
+    ListBox4.Items.Add('Открытие файла ' + trailO); // сообщение в ListBox
+    ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
 
-    if res <= 32 then // Если результат меньше или равен 32, произошла ошибка
-    begin
-      ShowMessage('Ошибка при открытии файла. Код ошибки: ' + IntToStr(res));
-end;
+  end;
 end;
 end.
 
