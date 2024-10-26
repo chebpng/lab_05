@@ -41,7 +41,7 @@ type
 
 var
   Form1: TForm1;
-  n, z, o, v, sorted, temp, elem: integer;
+  n, ns, z, o, v, sorted, temp, elem: integer;
   mass,masss:array of integer;
   trail:string;
 
@@ -90,32 +90,32 @@ procedure TForm1.Button5Click(Sender: TObject);
 begin
   ListBox2.Items.Clear;
   //упорядоченный
-  n:=strtoint(Edit1.text);
+  ns:=strtoint(Edit1.text);
   randomize();
-  setlength(mass, n);
-  Randomis(n, mass);
-  for z := 1 to n - 1 do
+  setlength(masss, ns);
+  Randomis(n, masss);
+  for z := 1 to ns - 1 do
   begin
-      temp := mass[z];
+      temp := masss[z];
       o := z - 1;
-      while (o >= 0) and (mass[o] > temp) do
+      while (o >= 0) and (masss[o] > temp) do
       begin
-          mass[o + 1] := mass[o];
+          masss[o + 1] := masss[o];
           o := o - 1;
       end;
-      mass[o + 1] := temp;
+      masss[o + 1] := temp;
   end;
   if n <= 40 then
     begin
-      for z := 0 to n-1 do
+      for z := 0 to ns-1 do
           begin
-               ListBox2.Items.Add(inttostr(mass[z]));
+               ListBox2.Items.Add(inttostr(masss[z]));
           end;
       end
       else
           for z := 0 to 39 do
           begin
-            ListBox2.Items.Add(inttostr(mass[z]));
+            ListBox2.Items.Add(inttostr(masss[z]));
           end;
     end;
 
@@ -125,13 +125,54 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
+var
+  MyFile:TextFile;
+  i:integer;
 begin
      //сохранение в файл
      ListBox4.Items.Add('Выберите место для сохранения файла');
      SelectDirectoryDialog1.Execute;
      trail := SelectDirectoryDialog1.FileName;
-     ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text);
-end;
+     AssignFile(MyFile, trail+'\'+ComboBox1.text+'.txt');
+     Rewrite(MyFile);
+     try
+         // Используем цикл для записи всех элементов ComboBox
 
+         if ListBox1.Items.Count >0 then
+         begin
+           WriteLn(MyFile, '----------Линейный----------');
+           for i := 0 to n-1 do
+           begin
+             WriteLn(MyFile, mass[i]);
+           end;
+         end;
+
+        if ListBox2.Items.Count >0 then
+        begin
+          WriteLn(MyFile, '----------Упорядоченный----------');
+          for i := 0 to ListBox2.Items.Count - 1 do
+          begin
+            WriteLn(MyFile, ListBox2.Items[i]);
+          end;
+        end;
+
+
+
+        if ListBox3.Items.Count >0 then
+        begin
+          WriteLn(MyFile, '----------Слияние----------');
+          for i := 0 to ListBox3.Items.Count - 1 do
+          begin
+            WriteLn(MyFile, ListBox3.Items[i]);
+          end;
+        end;
+
+       finally
+         // Закрываем файл
+         CloseFile(MyFile);
+     ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text+'.txt');
+
+        end;
+     end;
 end.
 
