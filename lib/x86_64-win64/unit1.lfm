@@ -67,6 +67,7 @@ object Form1: TForm1
     Width = 135
     Caption = 'Слияние'
     TabOrder = 6
+    OnClick = Button6Click
   end
   object ListBox1: TListBox
     Left = 57
