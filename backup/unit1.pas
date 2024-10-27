@@ -270,6 +270,5 @@ begin
     ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
 
   end;
-end;
 end.
 
