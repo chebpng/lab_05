@@ -54,6 +54,16 @@ implementation
 
 { TForm1 }
 
+{Да, массив можно считать линейным списком, так как он представляет собой упорядоченную структуру
+данных, в которой элементы располагаются последовательно и могут быть доступны по индексу.
+
+Основные характеристики линейного списка и массива:
+
+Последовательное расположение: элементы расположены в памяти последовательно.
+Доступ по индексу: элементы массива можно быстро найти по их индексу.
+Фиксированный размер (для статических массивов): массивы имеют фиксированный размер после инициализации,
+в отличие от некоторых типов списков, которые могут динамически изменяться.}
+
 procedure Merge(var arr, arr1: array of Integer; sn, n1: Integer; var res: array of Integer);
 var
   l, r, k: Integer;
@@ -121,39 +131,60 @@ begin
     smass[i] := result[i];
 end;
 
-procedure Randomis(var n:integer; var mass:array of integer);
-var elem, z:integer;
-begin
 
-    Randomize();
-    for z:=0 to n-1 do
-    begin
-    if Random(2) = 0 then
-      mass[z] := Random(1000)
-    else
-      mass[z] := -1 * (Random(1000));
-  end;
-end;
 
 
 procedure TForm1.Button4Click(Sender: TObject);
+type
+  pel = ^elem;
+  elem = record
+    s: integer;
+    p: pel;
+  end;
+
+var
+  p1, p2, p3: pel;
+  s, v, o, n: integer;
+
 begin
-        ListBox1.Items.Clear;
-        n:=strtoint(Edit1.text);
-        SetLength(mass, n);
-        Randomis(n, mass);
-        if n <= 40 then
-        begin
-           for z := 0 to n-1 do
-             begin
-                    ListBox1.Items.Add(inttostr(mass[z]));
-             end;
-        end
-        else
-            for z := 0 to 39 do
-              begin
-                   ListBox1.Items.Add(inttostr(mass[z]));
-              end;
+  n := StrToInt(Edit1.Text);  // Получаем значение n из Edit1
+  p1 := nil;  // Инициализируем начало списка
+  p2 := nil;
+  Randomize();  // Инициализация генератора случайных чисел
+  v := 1;
+
+  while v <= n do
+  begin
+    New(p3);  // Создаем новый элемент списка
+    p3^.s := (1000 - Random(2000));  // Заполняем случайным значением
+
+    if p1 = nil then
+      p1 := p3  // Устанавливаем первый элемент списка
+    else
+      p2^.p := p3;  // Присваиваем следующий элемент для предыдущего
+
+    p2 := p3;  // Обновляем текущий элемент
+    p2^.p := nil;  // Последний элемент указывает на nil
+    v := v + 1;
+  end;
+
+  // Очистка и добавление элементов в ListBox1
+  ListBox1.Items.Clear;
+
+  if n <= 40 then
+  begin
+    p2 := p1;  // Начинаем с начала списка
+    for o := 1 to n do
+    begin
+      if p2 <> nil then
+      begin
+        ListBox1.Items.Add(IntToStr(p2^.s));  // Добавляем значение в ListBox1
+        p2 := p2^.p;  // Переходим к следующему элементу
+      end;
+    end;
+  end;
+end;
+
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -163,7 +194,7 @@ begin
   ns:=strtoint(Edit1.text);
   randomize();
   setlength(masss, ns);
-  Randomis(n, masss);
+
   for z := 1 to ns - 1 do
   begin
       temp := masss[z];
@@ -197,7 +228,7 @@ begin
   randomize();
   setlength(smass, sn);
   setlength(result, sn);
-  Randomis(sn, smass);
+
   MergeSort(smass, sn);
   if sn <= 40 then
     begin
