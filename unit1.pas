@@ -188,7 +188,7 @@ end;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
-//упорядоченный с включением
+//упорядоченный с включением от меньшего к большему
 type
   pel = ^elem;
   elem = record
@@ -196,30 +196,68 @@ type
     p: pel;
   end;
 
-  var
-  p1, p2, p3: pel;
+var
+  p1, p2, p3, p4: pel;
   s, v, o, n: integer;
 
 begin
-
   n := StrToInt(Edit1.Text);  // Получаем значение n из Edit1
   p1 := nil;  // Инициализируем начало списка
-  p2 := nil;
   Randomize();  // Инициализация генератора случайных чисел
-  o := (1000 - Random(2000));  // Заполняем случайным значением
-  new (p3)
-  p3^.s := (1000 - Random(2000));
-  if p1 = nil then
-     p1 := p3  // Устанавливаем первый элемент списка
-  else
-     p2^.p := p3;
 
+  for v := 1 to n do
+  begin
+    new(p4);  // Создаём новый элемент списка
+    p4^.s := (1000 - Random(2000));  // Присваиваем случайное значение в поле s
+    p4^.p := nil; // Инициализируем указатель на следующий элемент как nil
 
-  if o < p2^.s then
-     new (p3);
+    // Если список пуст, вставляем новый элемент как первый
+    if p1 = nil then
+    begin
+      p1 := p4;
+    end
+    else
+    begin
+      p2 := p1;
+      p3 := nil;
 
+      // Поиск позиции для вставки нового элемента
+      while (p2 <> nil) and (p2^.s < p4^.s) do
+      begin
+        p3 := p2;    // Запоминаем текущий элемент как предыдущий
+        p2 := p2^.p; // Переходим к следующему элементу
+      end;
+
+      // Вставка нового элемента в найденную позицию
+      if p3 = nil then
+      begin
+        // Вставляем в начало списка
+        p4^.p := p1;
+        p1 := p4;
+      end
+      else
+      begin
+        // Вставляем между элементами p3 и p2
+        p3^.p := p4;
+        p4^.p := p2;
+      end;
+    end;
   end;
 
+   // Очистка и добавление элементов в ListBox1
+  ListBox2.Items.Clear;
+  if n <= 40 then
+  begin
+    p2 := p1;  // Начинаем с начала списка
+    for o := 1 to n do
+    begin
+      if p2 <> nil then
+      begin
+        ListBox2.Items.Add(IntToStr(p2^.s));  // Добавляем значение в ListBox1
+        p2 := p2^.p;  // Переходим к следующему элементу
+      end;
+      end;
+    end;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
