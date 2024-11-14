@@ -9,6 +9,11 @@ uses
   Windows;
 
 type
+  pel = ^elem;  // Тип pel - указатель на элемент типа elem
+  elem = record
+    s: integer;
+    p: pel;  // Указатель на следующий элемент списка
+  end;
 
   { TForm1 }
 
@@ -43,10 +48,12 @@ type
 
 var
   Form1: TForm1;
-  n, ns, sn, z, o, v, sorted, temp, elem: integer;
+  n, ns, sn, z, o, v, sorted, temp: integer;
   mass,masss,smass,result:array of integer;
   trail, trailO:string;
   res:QWord;
+  Linear,SortLinear:pel;
+  DLinear,DSortLinear:integer;
 
 implementation
 
@@ -102,7 +109,8 @@ begin
         p2 := p2^.p;  // Переходим к следующему элементу
       end;
     end;
-
+    Linear := p1^.p;
+    DLinear := p1^.s;
 end;
 
 end;
@@ -178,6 +186,8 @@ begin
       end;
       end;
     end;
+    SortLinear := p1^.p;
+    DSortLinear := p2^.s;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
@@ -192,9 +202,19 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);//сохранение в файл
+
+type
+  pel = ^elem;
+  elem = record
+    s: integer;
+    p: pel;
+  end;
+
 var
   MyFile:TextFile;
   i:integer;
+    p1, p2, p3, p4: pel;
+
 begin
      ListBox4.Items.Add('Выберите место для сохранения файла');
      SelectDirectoryDialog1.Execute;
@@ -205,29 +225,24 @@ begin
          if ListBox1.Items.Count >0 then
            begin
              WriteLn(MyFile, '----------Линейный----------');
-             for i := 0 to n-1 do
+             WriteLn(MyFile, DLinear);
+             p1:=Linear;
+             for i := 1 to n-1 do
                begin
-                 WriteLn(MyFile, mass[i]);
+                 WriteLn(MyFile, p1^.s);
+                 p1:=p1^.p
                end;
            end;
 
-        if ListBox2.Items.Count >0 then
-        begin
-          WriteLn(MyFile, '----------Упорядоченный----------');
-          for i := 0 to ns-1 do
-            begin
-              WriteLn(MyFile, masss[i]);
-            end;
-        end;
-
-        if ListBox3.Items.Count >0 then
-        begin
-          WriteLn(MyFile, '----------Слияние----------');
-          for i := 0 to sn - 1 do
-            begin
-              WriteLn(MyFile, smass[i]);
-            end;
-        end;
+        //if ListBox2.Items.Count >0 then
+        //begin
+        //  WriteLn(MyFile, '----------Упорядоченный----------');
+        //  for i := 0 to ns-1 do
+        //    begin
+        //      WriteLn(MyFile, masss[i]);
+        //    end;
+        //end;
+        //end;
        finally
          // Закрываем файл
          CloseFile(MyFile);

@@ -9,6 +9,11 @@ uses
   Windows;
 
 type
+  pel = ^elem;  // Тип pel - указатель на элемент типа elem
+  elem = record
+    s: integer;
+    p: pel;  // Указатель на следующий элемент списка
+  end;
 
   { TForm1 }
 
@@ -43,10 +48,12 @@ type
 
 var
   Form1: TForm1;
-  n, ns, sn, z, o, v, sorted, temp, elem: integer;
-  mass,masss,smass,resultt:array of integer;
+  n, ns, sn, z, o, v, sorted, temp: integer;
+  mass,masss,smass,result:array of integer;
   trail, trailO:string;
   res:QWord;
+  Linear,SortLinear:pel;
+  DLinear,DSortLinear:integer;
 
 implementation
 
@@ -102,7 +109,8 @@ begin
         p2 := p2^.p;  // Переходим к следующему элементу
       end;
     end;
-
+    Linear := p1^.p;
+    DLinear := p1^.s;
 end;
 
 end;
@@ -178,96 +186,13 @@ begin
       end;
       end;
     end;
+    SortLinear := p1^.p;
+    DSortLinear := p2^s;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
+begin
   //cлияние
-
-  type
-  PNode = ^TNode;
-  TNode = record
-    Data: Integer;
-    Next: PNode;
-  end;
-
-function MergeSortedLists(l1, l2: PNode): PNode;
-var
-  result: PNode;
-begin
-  // Базовые случаи
-  if l1 = nil then Exit(l2);
-  if l2 = nil then Exit(l1);
-
-  // Рекурсивное объединение двух отсортированных списков
-  if l1^.Data <= l2^.Data then
-  begin
-    result := l1;
-    result^.Next := MergeSortedLists(l1^.Next, l2);
-  end
-  else
-  begin
-    result := l2;
-    result^.Next := MergeSortedLists(l1, l2^.Next);
-  end;
-  Exit(result);
-end;
-
-function MergeSortList(head: PNode): PNode;
-var
-  slow, fast, mid: PNode;
-begin
-  // Базовый случай: если пустой список или один элемент
-  if (head = nil) or (head^.Next = nil) then
-    Exit(head);
-
-  // Поиск середины списка (slow - середина, fast - конец)
-  slow := head;
-  fast := head^.Next;
-
-  while (fast <> nil) and (fast^.Next <> nil) do
-  begin
-    slow := slow^.Next;
-    fast := fast^.Next^.Next;
-  end;
-
-  mid := slow^.Next;
-  slow^.Next := nil; // Разделение списка на две половины
-
-  // Рекурсивная сортировка половин и их слияние
-  Result := MergeSortedLists(MergeSortList(head), MergeSortList(mid));
-end;
-end;
-
-procedure TForm1.Button6Click(Sender: TObject);
-var
-  head, newNode, sortedList: PNode;
-  i, n: integer;
-begin
-  n := StrToInt(Edit1.Text); // Получаем количество элементов
-  head := nil;
-  Randomize;
-
-  // Генерация случайного связанного списка
-  for i := 1 to n do
-  begin
-    New(newNode);
-    newNode^.Data := 1000 - Random(2000); // Случайное число от -1000 до 1000
-    newNode^.Next := head;
-    head := newNode;
-  end;
-
-  // Сортировка списка слиянием
-  sortedList := MergeSortList(head);
-
-  // Отображение отсортированного списка в ListBox3
-  ListBox3.Items.Clear;
-  while sortedList <> nil do
-  begin
-    ListBox3.Items.Add(IntToStr(sortedList^.Data));
-    sortedList := sortedList^.Next;
-  end;
-end;
-
 
 end;
 
@@ -277,9 +202,19 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);//сохранение в файл
+
+type
+  pel = ^elem;
+  elem = record
+    s: integer;
+    p: pel;
+  end;
+
 var
   MyFile:TextFile;
   i:integer;
+    p1, p2, p3, p4: pel;
+
 begin
      ListBox4.Items.Add('Выберите место для сохранения файла');
      SelectDirectoryDialog1.Execute;
@@ -290,29 +225,24 @@ begin
          if ListBox1.Items.Count >0 then
            begin
              WriteLn(MyFile, '----------Линейный----------');
-             for i := 0 to n-1 do
+             WriteLn(MyFile, DLinear);
+             p1:=Linear;
+             for i := 1 to n-1 do
                begin
-                 WriteLn(MyFile, mass[i]);
+                 WriteLn(MyFile, p1^.s);
+                 p1:=p1^.p
                end;
            end;
 
-        if ListBox2.Items.Count >0 then
-        begin
-          WriteLn(MyFile, '----------Упорядоченный----------');
-          for i := 0 to ns-1 do
-            begin
-              WriteLn(MyFile, masss[i]);
-            end;
-        end;
-
-        if ListBox3.Items.Count >0 then
-        begin
-          WriteLn(MyFile, '----------Слияние----------');
-          for i := 0 to sn - 1 do
-            begin
-              WriteLn(MyFile, smass[i]);
-            end;
-        end;
+        //if ListBox2.Items.Count >0 then
+        //begin
+        //  WriteLn(MyFile, '----------Упорядоченный----------');
+        //  for i := 0 to ns-1 do
+        //    begin
+        //      WriteLn(MyFile, masss[i]);
+        //    end;
+        //end;
+        //end;
        finally
          // Закрываем файл
          CloseFile(MyFile);
