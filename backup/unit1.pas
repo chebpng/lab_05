@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
-  CheckLst, ShellAPI, Windows;
+  Windows;
 
 type
 
@@ -44,7 +44,7 @@ type
 var
   Form1: TForm1;
   n, ns, sn, z, o, v, sorted, temp, elem: integer;
-  mass,masss,smass,result:array of integer;
+  mass,masss,smass,resultt:array of integer;
   trail, trailO:string;
   res:QWord;
 
@@ -53,86 +53,6 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
-
-{Да, массив можно считать линейным списком, так как он представляет собой упорядоченную структуру
-данных, в которой элементы располагаются последовательно и могут быть доступны по индексу.
-
-Основные характеристики линейного списка и массива:
-
-Последовательное расположение: элементы расположены в памяти последовательно.
-Доступ по индексу: элементы массива можно быстро найти по их индексу.
-Фиксированный размер (для статических массивов): массивы имеют фиксированный размер после инициализации,
-в отличие от некоторых типов списков, которые могут динамически изменяться.}
-
-procedure Merge(var arr, arr1: array of Integer; sn, n1: Integer; var res: array of Integer);
-var
-  l, r, k: Integer;
-begin
-  l := 0;
-  r := 0;
-  k := 0;
-
-  while (l < sn) and (r < n1) do
-    begin
-      if arr[l] <= arr1[r] then
-      begin
-        res[k] := arr[l];
-        l := l + 1;
-      end
-      else
-      begin
-        res[k] := arr1[r];
-        r := r + 1;
-      end;
-      k := k + 1;
-    end;
-
-  while l < sn do
-    begin
-      res[k] := arr[l];
-      l := l + 1;
-      k := k + 1;
-    end;
-
-    while r < n1 do
-    begin
-      res[k] := arr1[r];
-      r := r + 1;
-      k := k + 1;
-    end;
-end;
-
-procedure MergeSort(var smass: array of Integer; sn: Integer);
-var
-  mid, i: Integer;
-  leftArr, rightArr, result: array of Integer;
-begin
-  if sn < 2 then
-    Exit;
-
-  mid := sn div 2;
-
-  SetLength(leftArr, mid);
-  SetLength(rightArr, sn - mid);
-
-  for i := 0 to mid - 1 do
-    leftArr[i] := smass[i];
-
-  for i := mid to sn - 1 do
-    rightArr[i - mid] := smass[i];
-
-  MergeSort(leftArr, mid);
-  MergeSort(rightArr, sn - mid);
-
-  SetLength(result, sn);
-  Merge(leftArr, rightArr, mid, sn - mid, result);
-
-  for i := 0 to sn - 1 do
-    smass[i] := result[i];
-end;
-
-
-
 
 procedure TForm1.Button4Click(Sender: TObject);
 type
@@ -144,7 +64,7 @@ type
 
 var
   p1, p2, p3: pel;
-  s, v, o, n: integer;
+  v, o, n: integer;
 
 begin
   n := StrToInt(Edit1.Text);  // Получаем значение n из Edit1
@@ -198,7 +118,7 @@ type
 
 var
   p1, p2, p3, p4: pel;
-  s, v, o, n: integer;
+  v, o, n: integer;
 
 begin
   n := StrToInt(Edit1.Text);  // Получаем значение n из Edit1
@@ -261,28 +181,95 @@ begin
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
-begin
   //cлияние
-  ListBox3.Items.Clear;
-  sn:=strtoint(Edit1.text);
-  randomize();
-  setlength(smass, sn);
-  setlength(result, sn);
 
-  MergeSort(smass, sn);
-  if sn <= 40 then
-    begin
-         for z := 0 to sn-1 do
-           begin
-                ListBox3.Items.Add(inttostr(smass[z]));
-           end;
-      end
-      else
-          for z := 0 to 39 do
-              begin
-                  ListBox3.Items.Add(inttostr(smass[z]));
-              end;
-    end;
+  type
+  PNode = ^TNode;
+  TNode = record
+    Data: Integer;
+    Next: PNode;
+  end;
+
+function MergeSortedLists(l1, l2: PNode): PNode;
+var
+  result: PNode;
+begin
+  // Базовые случаи
+  if l1 = nil then Exit(l2);
+  if l2 = nil then Exit(l1);
+
+  // Рекурсивное объединение двух отсортированных списков
+  if l1^.Data <= l2^.Data then
+  begin
+    result := l1;
+    result^.Next := MergeSortedLists(l1^.Next, l2);
+  end
+  else
+  begin
+    result := l2;
+    result^.Next := MergeSortedLists(l1, l2^.Next);
+  end;
+  Exit(result);
+end;
+
+function MergeSortList(head: PNode): PNode;
+var
+  slow, fast, mid: PNode;
+begin
+  // Базовый случай: если пустой список или один элемент
+  if (head = nil) or (head^.Next = nil) then
+    Exit(head);
+
+  // Поиск середины списка (slow - середина, fast - конец)
+  slow := head;
+  fast := head^.Next;
+
+  while (fast <> nil) and (fast^.Next <> nil) do
+  begin
+    slow := slow^.Next;
+    fast := fast^.Next^.Next;
+  end;
+
+  mid := slow^.Next;
+  slow^.Next := nil; // Разделение списка на две половины
+
+  // Рекурсивная сортировка половин и их слияние
+  Result := MergeSortedLists(MergeSortList(head), MergeSortList(mid));
+end;
+end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+var
+  head, newNode, sortedList: PNode;
+  i, n: integer;
+begin
+  n := StrToInt(Edit1.Text); // Получаем количество элементов
+  head := nil;
+  Randomize;
+
+  // Генерация случайного связанного списка
+  for i := 1 to n do
+  begin
+    New(newNode);
+    newNode^.Data := 1000 - Random(2000); // Случайное число от -1000 до 1000
+    newNode^.Next := head;
+    head := newNode;
+  end;
+
+  // Сортировка списка слиянием
+  sortedList := MergeSortList(head);
+
+  // Отображение отсортированного списка в ListBox3
+  ListBox3.Items.Clear;
+  while sortedList <> nil do
+  begin
+    ListBox3.Items.Add(IntToStr(sortedList^.Data));
+    sortedList := sortedList^.Next;
+  end;
+end;
+
+
+end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
