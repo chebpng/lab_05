@@ -44,12 +44,10 @@ type
 
 var
   Form1: TForm1;
-  n, ns, sn, z, o, v, sorted, temp: integer;
-  mass, masss, smass, result: array of integer;
-  trail, trailO: string;
-  res: QWord;
   Linear, SortLinear: pel;
   DLinear, DSortLinear: integer;
+  trail, trailO: string;
+
 
 implementation
 

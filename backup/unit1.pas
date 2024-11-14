@@ -23,12 +23,10 @@ type
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
-    Button6: TButton;
     ComboBox1: TComboBox;
     Edit1: TEdit;
     ListBox1: TListBox;
     ListBox2: TListBox;
-    ListBox3: TListBox;
     ListBox4: TListBox;
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
