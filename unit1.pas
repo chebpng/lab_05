@@ -23,12 +23,10 @@ type
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
-    Button6: TButton;
     ComboBox1: TComboBox;
     Edit1: TEdit;
     ListBox1: TListBox;
     ListBox2: TListBox;
-    ListBox3: TListBox;
     ListBox4: TListBox;
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
@@ -44,16 +42,14 @@ type
 
   end;
 
-
-
 var
   Form1: TForm1;
   n, ns, sn, z, o, v, sorted, temp: integer;
-  mass,masss,smass,result:array of integer;
-  trail, trailO:string;
-  res:QWord;
-  Linear,SortLinear:pel;
-  DLinear,DSortLinear:integer;
+  mass, masss, smass, result: array of integer;
+  trail, trailO: string;
+  res: QWord;
+  Linear, SortLinear: pel;
+  DLinear, DSortLinear: integer;
 
 implementation
 
@@ -62,13 +58,6 @@ implementation
 { TForm1 }
 
 procedure TForm1.Button4Click(Sender: TObject);
-type
-  pel = ^elem;
-  elem = record
-    s: integer;
-    p: pel;
-  end;
-
 var
   p1, p2, p3: pel;
   v, o, n: integer;
@@ -111,19 +100,17 @@ begin
     end;
     Linear := p1^.p;
     DLinear := p1^.s;
-end;
-
+  end
+  else
+  begin
+      ListBox1.Items.Add('Кол-во элементов');
+      ListBox1.Items.Add('>40');
+          Linear := p1^.p;
+    DLinear := p1^.s;
+  end;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
-//упорядоченный с включением от меньшего к большему
-type
-  pel = ^elem;
-  elem = record
-    s: integer;
-    p: pel;
-  end;
-
 var
   p1, p2, p3, p4: pel;
   v, o, n: integer;
@@ -135,7 +122,7 @@ begin
 
   for v := 1 to n do
   begin
-    new(p4);  // Создаём новый элемент списка
+    New(p4);  // Создаём новый элемент списка
     p4^.s := (1000 - Random(2000));  // Присваиваем случайное значение в поле s
     p4^.p := nil; // Инициализируем указатель на следующий элемент как nil
 
@@ -172,8 +159,9 @@ begin
     end;
   end;
 
-   // Очистка и добавление элементов в ListBox1
+  // Очистка и добавление элементов в ListBox2
   ListBox2.Items.Clear;
+
   if n <= 40 then
   begin
     p2 := p1;  // Начинаем с начала списка
@@ -181,82 +169,87 @@ begin
     begin
       if p2 <> nil then
       begin
-        ListBox2.Items.Add(IntToStr(p2^.s));  // Добавляем значение в ListBox1
+        ListBox2.Items.Add(IntToStr(p2^.s));  // Добавляем значение в ListBox2
         p2 := p2^.p;  // Переходим к следующему элементу
-      end;
       end;
     end;
     SortLinear := p1^.p;
-    DSortLinear := p2^.s;
+    DSortLinear := p1^.s;
+   end
+  else
+  begin
+      ListBox2.Items.Add('Кол-во элементов');
+      ListBox2.Items.Add('>40');
+          SortLinear := p1^.p;
+    DSortLinear := p1^.s;
+  end;
+
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  //cлияние
+  // Слияние (еще не реализовано)
+end;
 
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  MyFile: TextFile;
+  i: integer;
+  p1: pel;
+
+begin
+  ListBox4.Items.Add('Выберите место для сохранения файла');
+  SelectDirectoryDialog1.Execute;
+  trail := SelectDirectoryDialog1.FileName;
+  AssignFile(MyFile, trail + '\' + ComboBox1.Text + '.txt');
+  Rewrite(MyFile);
+  n := StrToInt(Edit1.Text);
+  try
+    if ListBox1.Items.Count >0 then
+    begin
+      WriteLn(MyFile, '----------Линейный----------');
+      WriteLn(MyFile, DLinear);
+      p1 := Linear;
+      for i := 1 to n - 1 do
+      begin
+         WriteLn(MyFile, inttostr(p1^.s));
+         p1 := p1^.p
+      end;
+      WriteLn(MyFile, ' ');
+    end;
+
+
+    if ListBox2.Items.Count >0 then
+    begin
+      WriteLn(MyFile, '----------Линейный сортировка вставками----------');
+      WriteLn(MyFile, DSortLinear);
+      p1 := SortLinear;
+      for i := 1 to n - 1 do
+      begin
+         WriteLn(MyFile, inttostr(p1^.s));
+         p1 := p1^.p
+      end;
+      WriteLn(MyFile, ' ');
+    end;
+
+  finally
+    // Закрываем файл
+    CloseFile(MyFile);
+    ListBox4.Items.Add('Файл сохранен по пути - ' + trail + '\' + ComboBox1.Text + '.txt');
+  end;
+end;
+
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  OpenDialog1.Execute;
+  trailO := OpenDialog1.FileName; // путь к выбранному файлу
+  ListBox4.Items.Add('Открытие файла ' + trailO); // сообщение в ListBox
+  ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
-  close
+  Close;
 end;
-
-procedure TForm1.Button1Click(Sender: TObject);//сохранение в файл
-
-type
-  pel = ^elem;
-  elem = record
-    s: integer;
-    p: pel;
-  end;
-
-var
-  MyFile:TextFile;
-  i:integer;
-    p1, p2, p3, p4: pel;
-
-begin
-     ListBox4.Items.Add('Выберите место для сохранения файла');
-     SelectDirectoryDialog1.Execute;
-     trail := SelectDirectoryDialog1.FileName;
-     AssignFile(MyFile, trail+'\'+ComboBox1.text+'.txt');
-     Rewrite(MyFile);
-     try
-         if ListBox1.Items.Count >0 then
-           begin
-             WriteLn(MyFile, '----------Линейный----------');
-             WriteLn(MyFile, DLinear);
-             p1:=Linear;
-             for i := 1 to n-1 do
-               begin
-                 WriteLn(MyFile, p1^.s);
-                 p1:=p1^.p
-               end;
-           end;
-
-        //if ListBox2.Items.Count >0 then
-        //begin
-        //  WriteLn(MyFile, '----------Упорядоченный----------');
-        //  for i := 0 to ns-1 do
-        //    begin
-        //      WriteLn(MyFile, masss[i]);
-        //    end;
-        //end;
-        //end;
-       finally
-         // Закрываем файл
-         CloseFile(MyFile);
-     ListBox4.Items.Add('Файл сохранен по пути - '+trail+'\'+ComboBox1.text+'.txt');
-        end;
-     end;
-
-procedure TForm1.Button2Click(Sender: TObject);
-begin
-  OpenDialog1.Execute ;
-  trailO := OpenDialog1.Filename; // путь к выбранному файлу
-    ListBox4.Items.Add('Открытие файла ' + trailO); // сообщение в ListBox
-    ShellExecute(0, 'open', PChar(trailO), nil, nil, SW_SHOWNORMAL);
-
-  end;
 end.
-

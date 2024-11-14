@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 233
+  Left = 229
   Height = 844
-  Top = 82
+  Top = 148
   Width = 690
   Caption = 'Form1'
   ClientHeight = 844
@@ -125,8 +125,6 @@ object Form1: TForm1
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Title = 'Выберите место для сохранения файла'
-    FileName = 'C:\Users\chebpng\Desktop\IPMKN\lab_05\tempfiles'
-    InitialDir = 'C:\Users\chebpng\Desktop\IPMKN\lab_05\tempfiles'
     Left = 216
     Top = 120
   end
