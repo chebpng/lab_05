@@ -243,6 +243,9 @@ begin
       end;
     end;
   end;
+
+   // Очистка и добавление элементов в ListBox1
+  ListBox2.Items.Clear;
   if n <= 40 then
   begin
     p2 := p1;  // Начинаем с начала списка
@@ -250,7 +253,7 @@ begin
     begin
       if p2 <> nil then
       begin
-        ListBox1.Items.Add(IntToStr(p2^.s));  // Добавляем значение в ListBox1
+        ListBox2.Items.Add(IntToStr(p2^.s));  // Добавляем значение в ListBox1
         p2 := p2^.p;  // Переходим к следующему элементу
       end;
       end;
