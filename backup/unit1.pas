@@ -35,7 +35,6 @@ type
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
   private
 
   public
@@ -44,12 +43,10 @@ type
 
 var
   Form1: TForm1;
-  n, ns, sn, z, o, v, sorted, temp: integer;
-  mass, masss, smass, result: array of integer;
-  trail, trailO: string;
-  res: QWord;
   Linear, SortLinear: pel;
   DLinear, DSortLinear: integer;
+  trail, trailO: string;
+
 
 implementation
 
@@ -107,6 +104,7 @@ begin
       ListBox1.Items.Add('>40');
           Linear := p1^.p;
     DLinear := p1^.s;
+     Dispose(p1)
   end;
 end;
 
@@ -180,22 +178,19 @@ begin
   begin
       ListBox2.Items.Add('Кол-во элементов');
       ListBox2.Items.Add('>40');
-          SortLinear := p1^.p;
-    DSortLinear := p1^.s;
+      SortLinear := p1^.p;
+      DSortLinear := p1^.s;
+      Dispose(p1)
   end;
 
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
-begin
-  // Слияние (еще не реализовано)
-end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
   MyFile: TextFile;
-  i: integer;
-  p1: pel;
+  i,n: integer;
+  p1,p2: pel;
 
 begin
   ListBox4.Items.Add('Выберите место для сохранения файла');
@@ -210,12 +205,14 @@ begin
       WriteLn(MyFile, '----------Линейный----------');
       WriteLn(MyFile, DLinear);
       p1 := Linear;
+      p2 := p1;
       for i := 1 to n - 1 do
       begin
-         WriteLn(MyFile, inttostr(p1^.s));
-         p1 := p1^.p
+         WriteLn(MyFile, inttostr(p2^.s));
+         p2 := p2^.p
       end;
       WriteLn(MyFile, ' ');
+     // while
     end;
 
 
